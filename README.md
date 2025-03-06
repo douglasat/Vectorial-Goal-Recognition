@@ -33,7 +33,7 @@ The example above runs the method on the scenario "Caldera", computing two probl
 
 A list of available scenarios is found on the directory:
 ```
-python3 ~/app/Vector-Estimation/Continuous/scenarios
+~/app/Vector-Estimation/Continuous/scenarios
 ```
 
 ### Running the Discrete Domain Method
@@ -46,5 +46,5 @@ The example above runs the method on the ferry-optimal dataset experiments using
 
 A list of available experiments is found on the directory:
 ```
-python3 ~/app/Vector-Estimation/Discrete/experiments
+~/app/Vector-Estimation/Discrete/experiments
 ```
