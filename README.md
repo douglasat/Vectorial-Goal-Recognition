@@ -1,6 +1,6 @@
 # Vector Method Docker Repository
 
-This repository provides the code and dataset from the paper: [Real-Time Goal Recognition Using Approximations in Euclidean]([https://link-url-here.org](https://ebooks.iospress.nl/doi/10.3233/FAIA240914))
+This repository provides the code and dataset from the paper: [Real-Time Goal Recognition Using Approximations in Euclidean](https://ebooks.iospress.nl/doi/10.3233/FAIA240914)
 
 ## Docker Image
 
