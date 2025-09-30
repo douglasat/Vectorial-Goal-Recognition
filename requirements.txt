@@ -1,1 +1,4 @@
-pip install ompl pyparsing matplotlib pandas
+ompl
+pyparsing
+matplotlib
+pandas
