@@ -2,49 +2,38 @@
 
 This repository provides the code and dataset from the paper: [Real-Time Goal Recognition Using Approximations in Euclidean](https://ebooks.iospress.nl/doi/10.3233/FAIA240914)
 
-## Docker Image
 
-The Docker image contains all required code and dependencies. You can pull it using:
+## Requirements
 
+- Python 3.10.12  
+- Required Python packages (install via `pip install -r requirements.txt`)  
+- The dataset folder should be located at `../starcraft_dataset/scenarios` relative to the script.
+
+## Continuous Domain 
+
+### Running Experiments on All Scenarios
 ```
-docker pull douglasat/vector_method
-```
-
-## Running the Docker Image in Interactive Mode
-
-To run the Docker container in interactive mode, use:
-
-```
-docker run -it douglasat/vector_method
+python3 ~/Vector-Estimation/Continuous/vector_inference/compute_experiments.py -p <num_parallel> -t <topk> -n <save_name>
 ```
 
-This will give you access to a shell where you can execute commands inside the container.
+| Argument          | Description                                              |
+| ----------------- | -------------------------------------------------------- |
+| `-p, --parallel`  | Number of parallel problems                              |
+| `-t, --topk`      | Number of top-k solutions used in the vector estimation  |
+| `-n, --save_name` | Name used to save the results                            |
 
-## Running Methods Inside the Interactive Docker
-
-### Running the Continuous Domain Method
-To execute the continuous domain method, run:
-
+### Running on a particular scenario
 ```
-python3 ~/app/Vector-Estimation/Continuous/python3 estimation_method_multiple.py Caldera 2 5
+python3 ~/Vector-Estimation/Continuous/vector_inference/estimation_method_multiple_mod.py -s <scenario> -p <num_cores> -t <topk> -n <save_name>
 ```
-
-The example above runs the method on the scenario "Caldera", computing two problems in parallel and using the top 5 solutions in the inference process.
+| Argument          | Description                                              |
+| ----------------- | -------------------------------------------------------- |
+| `-s, --scenario`  | Scenario name                                            |
+| `-p, --parallel`  | Number of parallel problems                              |
+| `-t, --topk`      | Number of top-k solutions used in the vector estimation  |
+| `-n, --save_name` | Name used to save the results                            |
 
 A list of available scenarios is found on the directory:
 ```
-~/app/Vector-Estimation/Continuous/scenarios
-```
-
-### Running the Discrete Domain Method
-To execute the discrete domain method, run:
-
-```
-python3 ~/app/Vector-Estimation/Discrete/python3 test_domain.py "experiments/" ferry-optimal "vector_inference" 5
-```
-The example above runs the method on the ferry-optimal dataset experiments using the top 5 solutions in the inference process.
-
-A list of available experiments is found on the directory:
-```
-~/app/Vector-Estimation/Discrete/experiments
+~/Vector-Estimation/Continuous/starcraft_dataset/scenarios
 ```
