@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -l
 module load miniconda3 
 pushd ..
 conda create --name ompl-env python=3.10 -y
