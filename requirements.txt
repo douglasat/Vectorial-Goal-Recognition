@@ -2,3 +2,4 @@ ompl
 pyparsing
 matplotlib
 pandas
+scipy
