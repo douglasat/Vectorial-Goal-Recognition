@@ -8,3 +8,6 @@ __pycache__/
 # Ignore local configs
 .env
 config.json
+
+# Ignore build
+**/data/
