@@ -88,7 +88,7 @@ std::string plan(const std::vector<double>& start, const std::vector<double>& go
     scenario_step = scenario_step1;
 
     std::uint_fast32_t convertedSeed = static_cast<std::uint_fast32_t>(seed + 1);
-    ompl::RNG::setSeed(convertedSeed); 
+    ompl::RNG::setSeed(convertedSeed);
      
      // construct the state space we are planning in
     auto space(std::make_shared<ob::SE2StateSpace>());

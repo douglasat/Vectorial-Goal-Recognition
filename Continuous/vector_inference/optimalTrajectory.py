@@ -9,13 +9,11 @@ from generate_scenario import Scenario
 import time
 import sys
 
+# import ompl
+# from ompl import base as ob
+# from ompl import geometric as og
 
-#sys.path.append("./ompl-1.6.0/py-bindings")
-
-from ompl import base as ob
-from ompl import geometric as og
-
-import geometric_plan_c
+import geometric_plan_python
 
 def sample_observations(O_Optimal, num_obser):
     # sample the observations points
@@ -263,7 +261,7 @@ def parse_path_string(path_string):
 
 def geometric_plan(state_init, state_goal, scenario, seed, sing_mult_path="single"):    
     if sing_mult_path == 'single':
-        path_string = geometric_plan_c.plan(state_init, state_goal, scenario.map, scenario.step, 1, seed)
+        path_string = geometric_plan_python.plan(state_init, state_goal, scenario.map, scenario.step, 1, seed)
         path = parse_path_string(path_string)
 
         if path != 'Path is null.':
@@ -275,8 +273,8 @@ def geometric_plan(state_init, state_goal, scenario, seed, sing_mult_path="singl
         else:
             return 'Path is null', 0, calculate_distance(path[0][-1], state_goal)
     else:
-        bla
-        path_string = geometric_plan_c.plan(state_init, state_goal, scenario.map, scenario.step, 10)
+
+        path_string = geometric_plan_python.plan(state_init, state_goal, scenario.map, scenario.step, 10)
         path = parse_path_string(path_string)
         
         return path, 0
