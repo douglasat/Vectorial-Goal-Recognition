@@ -5,9 +5,10 @@ This repository provides the code and dataset from the paper: [Real-Time Goal Re
 
 ## Requirements
 
-- Python 3.10.12  
+- Python 3.10.12 
+- Create a conda environment: `conda create -n ompl-env python=3.10.12`
+- Conda activate: `conda activate ompl-env` 
 - Required Python packages (install via `pip install -r requirements.txt`)  
-- The dataset folder should be located at `../starcraft_dataset/scenarios` relative to the script.
 
 ## Continuous Domain 
 
