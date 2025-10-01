@@ -1,0 +1,29 @@
+name: Python Package using Conda
+
+on: 
+  workflow_dispatch:
+
+jobs:
+  build-linux:
+    runs-on: ubuntu-latest
+    strategy:
+      max-parallel: 5
+
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Miniconda
+      uses: conda-incubator/setup-miniconda@v2
+      with:
+        python-version: 3
+        auto-update-conda: true
+        activate-environment: ompl-env
+    
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        
+    - name: Execute experiments
+      run: |
+        cd Continuous/vector_inference
+        python3 compute_experiments.py -p 1 -t 1 -n bla
