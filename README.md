@@ -12,8 +12,11 @@ This repository provides the code and dataset from the paper: [Real-Time Goal Re
 ## Continuous Domain 
 
 ### Running Experiments on All Scenarios
+
+Run the scripts on the directory: `Vectorial-Goal-Recognition/Continuous/vector_inference`
+
 ```
-python3 ~/Vector-Estimation/Continuous/vector_inference/compute_experiments.py -p <num_parallel> -t <topk> -n <save_name>
+python3 compute_experiments.py -p <num_parallel> -t <topk> -n <save_name>
 ```
 
 | Argument          | Description                                              |
@@ -24,7 +27,7 @@ python3 ~/Vector-Estimation/Continuous/vector_inference/compute_experiments.py -
 
 ### Running on a particular scenario
 ```
-python3 ~/Vector-Estimation/Continuous/vector_inference/estimation_method_multiple_mod.py -s <scenario> -p <num_cores> -t <topk> -n <save_name>
+python3 estimation_method_multiple_mod.py -s <scenario> -p <num_cores> -t <topk> -n <save_name>
 ```
 | Argument          | Description                                              |
 | ----------------- | -------------------------------------------------------- |
@@ -35,5 +38,9 @@ python3 ~/Vector-Estimation/Continuous/vector_inference/estimation_method_multip
 
 A list of available scenarios is found on the directory:
 ```
-~/Vector-Estimation/Continuous/starcraft_dataset/scenarios
+Vectorial-Goal-Recognition/Continuous/starcraft_dataset/scenarios
+```
+### Results directory
+```
+Vectorial-Goal-Recognition/Continuous/vector_inference/results
 ```
