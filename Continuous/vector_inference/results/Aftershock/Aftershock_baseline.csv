@@ -1,0 +1,1 @@
+Initial,Goal,PPV_1,ACC_1,TPR_1,FPR_1,F1-Score_1,PPV_2,ACC_2,TPR_2,FPR_2,F1-Score_2,PPV_3,ACC_3,TPR_3,FPR_3,F1-Score_3,PPV_4,ACC_4,TPR_4,FPR_4,F1-Score_4,PPV_5,ACC_5,TPR_5,FPR_5,F1-Score_5,PPV_6,ACC_6,TPR_6,FPR_6,F1-Score_6,PPV_total,ACC_total,spread,planner_calls,online_time,offline_time,TPR,FPR,F1-Score

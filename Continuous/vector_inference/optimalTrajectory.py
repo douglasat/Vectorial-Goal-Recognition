@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from generate_scenario import Scenario
 import time
 import sys
+import concurrent.futures
 
 # import ompl
 # from ompl import base as ob
@@ -23,6 +24,7 @@ def sample_observations(O_Optimal, num_obser):
     print("Step Time Observations:", sampled_points)
     return sampled_points
 
+
 def calculate_distance(starting, destination):  # euclidean distance
     distance = math.sqrt((destination[0] - starting[0]) ** 2 + (destination[1] - starting[1]) ** 2)  # calculates Euclidean distance (straight-line) distance between two points
     return distance
@@ -37,12 +39,12 @@ def CarODE(q, u):  # dynamic system
 
 
 def P(u, N, state_init, state_goal):  # cost function of optimization_withConstrains
-    #s = rollout(u[0:-1], N, state_init, 'state')
-    #v = rollout(u, N, state_init, 'vel')[0:2]
-    #e = [[], []]
+    # s = rollout(u[0:-1], N, state_init, 'state')
+    # #v = rollout(u, N, state_init, 'vel')[0:2]
+    # e = [[], []]
 
-    #e[0] = s[0][-round(len(s[0]) * 0.5):] - state_goal[0]
-    #e[1] = s[1][-round(len(s[0]) * 0.5):] - state_goal[1]
+    # e[0] = s[0][-round(len(s[0]) * 0.5):] - state_goal[0]
+    # e[1] = s[1][-round(len(s[0]) * 0.5):] - state_goal[1]
 
     #e[0] = np.power(s[0][109] - state_goal[0], 2)
     #e[1] = np.power(s[1][109] - state_goal[1], 2)
@@ -111,20 +113,20 @@ def optimization_withConstrains(start, state_init, state_goal, agent_bounds, N, 
     u = result.x
     s = rollout(u[0:-1], N, state_init, 'state')
 
-    #scenario.PlotMap()
-    #plt.plot(s[0], s[1])
-    #plt.show()
+    # scenario.PlotMap()
+    # plt.plot(s[0], s[1], '-x')
+    # plt.show()
 
 
     tf = -1
     success = False
-    if np.min(np.array(wallDist1(result.x, N, state_init, scenario))) >= 0:
-        for k in range(len(s[0])):
-            if calculate_distance([s[0][k], s[1][k]], state_goal[0:2]) <= 1e-1:
-                tf = k
-                success = True
-                print('Success Converged')
-                break
+    #if np.min(np.array(wallDist1(s, scenario))) >= 0:
+    for k in range(len(s[0])):
+        if calculate_distance([s[0][k], s[1][k]], state_goal[0:2]) <= 1e-1:
+            tf = k
+            success = True
+            print('Success Converged')
+            break
 
     return [s[0][0:tf+1], s[1][0:tf+1], s[2][0:tf+1]], u[0:tf], success
 
@@ -187,11 +189,10 @@ def wallDist(u, N, state_init, scenario):  # obstacles constrains
     radius = scenario.step
     dist = []
     for k in range(len(s[0])):
-        i = 1
-        flag = True
-        while flag:
-            x = s[0][k]
-            y = s[1][k]
+        x = s[0][k]
+        y = s[1][k]
+        d = 1e3
+        for i in range(1, 4):
             for a in range(8):
                 x_radius = round((cos(45 * math.pi * a / 180) * radius * i + x) / scenario.step)
                 y_radius = round((sin(45 * math.pi * a / 180) * radius * i + y) / scenario.step)
@@ -210,14 +211,11 @@ def wallDist(u, N, state_init, scenario):  # obstacles constrains
 
                 if not (scenario.map[x_radius][
                             y_radius] == '.') or x_radius == 0 or y_radius == 0 or x_radius == 511 or y_radius == 511:
-                    dist.append(calculate_distance([x, y], [x_radius * scenario.step, y_radius * scenario.step]))
-                    flag = False
+                    d = calculate_distance([x, y], [x_radius * scenario.step, y_radius * scenario.step])
                     break
 
-            i = i + 1
-
-    if dist:
-        return dist
+        dist.append(d)
+    return dist
 
 
 def goal_state_constraints(u, N, state_init, state_goal):
@@ -315,19 +313,31 @@ def poli5(coef, td):  # compute a trajetorie with a 5th degree polynomial
     return q, dotq
 
 
-def optimalPath(state_init, state_goal, scenario, planner_type):  # main function to compute the optimal trajectory
+def optimalPath(state_init, state_goal, scenario, seed, planner_type):  # main function to compute the optimal trajectory
     success = False
     np.random.seed(42)
     tries = 0
     while not success and tries < 3:
         dist_to_goal = 100
         while dist_to_goal >= 1e-1:
-            path, cost, dist_to_goal = geometric_plan(state_init, state_goal, scenario, planner_type)  # find intermediate points in the map
+            # Create a ProcessPoolExecutor
+            with concurrent.futures.ProcessPoolExecutor(max_workers=1) as executor:
+                 # Submit tasks to the executor
+                futures = [executor.submit(geometric_plan, state_init, state_goal, scenario, seed+tries, planner_type) for _ in range(1)]
+                #path, cost, dist_to_goal = geometric_plan(state_init, state_goal, scenario, seed, planner_type)  # find intermediate points in the map
+                # Wait for all tasks to complete
+                completed_futures, _ = concurrent.futures.wait(futures, return_when=concurrent.futures.ALL_COMPLETED)   
         
-        if cost > 2.5:
-            path = pathGeneration(path, scenario.vmax*(1 - 0.1*tries))  # generates a simplified trajectory
+            # Retrieve results in the order of task submission
+            for future in futures:
+                path = future.result()[0]
+                cost = future.result()[1]
+                dist_to_goal = future.result()[2]
+
+        if cost > 3:
+            path = pathGeneration(path, scenario.vmax*(0.9 - 0.1*tries))  # generates a simplified trajectory
         else:
-            path = pathGeneration(path, scenario.vmax*(0.8 - 0.1*tries))  # generates a simplified trajectory
+            path = pathGeneration(path, scenario.vmax*(0.5 - 0.1*tries))  # generates a simplified trajectory
 
         
         #scenario.PlotMap()
@@ -365,12 +375,12 @@ def optimalPath(state_init, state_goal, scenario, planner_type):  # main functio
             u = np.append(u, len(s[0])*0.1 - 0.1)
 
             # Generates an optimal trajectory
-            [s, u, success] = optimization_withConstrains(u, state_init, state_goal, agent_bounds, N, 100, scenario)  
+            [s, u, success] = optimization_withConstrains(u, state_init, state_goal, agent_bounds, N, 200, scenario)  
 
-            #print(len(s[0]))
-            #scenario.PlotMap()
-            #plt.plot(s[0], s[1])
-            #plt.show()
+            # print(len(s[0]))
+            # scenario.PlotMap()
+            # plt.plot(s[0], s[1])
+            # plt.show()
 
         tries += 1
 

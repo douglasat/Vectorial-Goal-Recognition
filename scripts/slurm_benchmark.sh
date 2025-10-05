@@ -24,15 +24,25 @@ conda activate ompl-env
 
 # Parameters
 topk=15
-parallel=2
-save_name=multi_topk15
-CPUS=$((topk * parallel))
+parallel=30
+save_name=baseline
+method=mirroring
+
+if [ "$method" = "mirroring" ]; then
+    CPUS=$((parallel))
+
+elif [ "$method" = "vector" ]; then
+    CPUS=$((topk * parallel))
+else
+    echo "Unknown method"
+    exit 1
+fi
 
 pushd ../Continuous/vector_inference
 
 srun --nodes=1 --mem=64G --ntasks=1 --cpus-per-task=${CPUS} \
-    -e slurm.p${parallel}.t${topk}.n${save_name}.err \
-    -o slurm.p${parallel}.t${topk}.n${save_name}.out \
-    python3 compute_experiments.py -p $parallel -t $topk -n $save_name
+    -e slurm.p${parallel}.t${topk}.n${save_name}.m${method}.err \
+    -o slurm.p${parallel}.t${topk}.n${save_name}.m${method}.out \
+    python3 compute_experiments.py -p $parallel -t $topk -n $save_name -m $method
 
 wait
