@@ -24,7 +24,7 @@ conda activate ompl-env
 
 # Parameters
 topk=15
-parallel=1
+parallel=2
 save_name=multi_topk15
 CPUS=$((topk * parallel))
 
