@@ -55,7 +55,7 @@ def mirroring_inference(initial, goal):
     start_time = time.time()
     sumplanner = len(scenario.goalPoints) - 1
     solution_set = []
-    for obs in sampled_obser[-2:]:
+    for obs in sampled_obser:
         samble_now = sampled_obser.index(obs) + 1
         print('Evaluating observation %d of 6' % samble_now)
 
